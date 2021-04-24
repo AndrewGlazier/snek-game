@@ -1,0 +1,79 @@
+#grid-container {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  width: min(100vh, 100vw);
+  height: min(100vh, 100vw);
+  border: 1px solid black;
+  box-sizing: border-box;
+}
+
+.snake {
+  background-color: greenyellow;
+  box-sizing: border-box;
+  border: 1px solid black;
+  border-radius: 10px;
+}
+
+.right {
+  border-right: none;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.left {
+  border-left: none;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.up {
+  border-top: none;
+  border-top-right-radius: 0;
+  border-top-left-radius: 0;
+}
+
+.down {
+  border-bottom: none;
+  border-bottom-right-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+@keyframes spawn {
+  0% {
+    transform: scale(0);
+  }
+  30% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(0.7);
+  }
+  100% {
+    opacity: 100%;
+    transform: scale(1);
+  }
+}
+
+.food {
+  animation-name: spawn;
+  animation-duration: 2s;
+  background-color: hotpink;
+  border: 1px solid black;
+  box-sizing: border-box;
+  border-radius: 100%;
+}
+
+#overlay {
+  position: absolute;
+  text-align: center;
+  left: 0;
+  right: 0;
+  top: 50%;
+}
+
+#score {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+}
