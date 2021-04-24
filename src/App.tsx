@@ -49,6 +49,7 @@ const snakeHead = (cells.length / 2) + (GRID_WIDTH / 2);
 const initialSnake = [snakeHead - 4, snakeHead - 3, snakeHead - 2, snakeHead - 1, snakeHead];
 
 const App = () => {
+  const [touch, setTouch] = useState<[number, number] | undefined>();
   const [paused, setPaused] = useState(true);
   const [gameOver, setGameOver] = useState(false);
   const [tick, setTick] = useState(0);
@@ -138,51 +139,91 @@ const App = () => {
   }
   return (
     <div
-      id="grid-container"
-      tabIndex={0}
-      onKeyDown={handleKeyPress}
-      onBlur={() => setPaused(true)}
-      onFocus={() => setPaused(false)}
+      id="page-container"
+      onTouchStart={(evt) => {
+        if (evt.touches.length !== 1) {
+          setTouch(undefined);
+          return;
+        }
+        const { screenX, screenY } = evt.touches[0];
+        setTouch([screenX, screenY]);
+      }}
+      onTouchEnd={(evt) => {
+        if (evt.changedTouches.length !== 1 || !touch) {
+          return;
+        }
+        const [touchX, touchY] = touch;
+        const { screenX, screenY } = evt.changedTouches[0];
+        let newDirection: Direction;
+        if (Math.abs(screenX - touchX) > Math.abs(screenY - touchY)) {
+          if (screenX - touchX > 0) {
+            newDirection = 'right';
+          } else {
+            newDirection = 'left';
+          }
+        } else {
+          if (screenY - touchY > 0) {
+            newDirection = 'down';
+          } else {
+            newDirection = 'up';
+          }
+        }
+
+        const nextHead = moveHead(snake[snake.length - 1], newDirection);
+        if (snake.length > 1 && nextHead === snake[snake.length - 2]) {
+          // Don't allow the player to turn back on themselves
+          return;
+        }
+        setDirection(newDirection);
+      }}
     >
-      {
-        cells.map((val, idx, rest) => (
-          <div
-            key={val}
-            className={`
-              cell
-              ${snake.includes(idx) ? 'snake' : ''}
-              ${food === idx ? 'food' : ''}
-              ${getAdjacentClass(val, true)}
-              ${getAdjacentClass(val, false)}
-            `}
-            style={{
-              height: `${100 / GRID_HEIGHT}%`,
-              width: `${100 / GRID_WIDTH}%`,
-            }}
-          />
-        ))
-      }
-      <div id="score">
-        <div>Current score: {score}</div>
-        { !paused && !gameOver && <div>Press P to pause</div> }
-      </div>
-      <div id="overlay">
+      <div
+        id="grid-container"
+        tabIndex={0}
+        onKeyDown={handleKeyPress}
+        onBlur={() => setPaused(true)}
+        onFocus={() => setPaused(false)}
+      >
         {
-          gameOver && !paused && (
-            <div>
-              <div>Game over</div>
-              <div onClick={restartGame}>Click here to restart</div>
-            </div>
-          )
+          cells.map((val, idx, rest) => (
+            <div
+              key={val}
+              className={`
+                cell
+                ${snake.includes(idx) ? 'snake' : ''}
+                ${food === idx ? 'food' : ''}
+                ${getAdjacentClass(val, true)}
+                ${getAdjacentClass(val, false)}
+              `}
+              style={{
+                height: `${100 / GRID_HEIGHT}%`,
+                width: `${100 / GRID_WIDTH}%`,
+              }}
+            />
+          ))
         }
-        {
-          !gameOver && paused && (
-            <div>
-              <div>Game paused</div>
-              <div onClick={() => setPaused(false)}>Click here to resume</div>
-            </div>
-          )
-        }
+        <div id="score">
+          <div>Current score: {score}</div>
+          { !paused && !gameOver && <div>Press P to pause</div> }
+        </div>
+        <div id="overlay">
+          {
+            gameOver && !paused && (
+              <div>
+                <div>Game over</div>
+                <div onClick={restartGame}>Click here to restart</div>
+              </div>
+            )
+          }
+          {
+            !gameOver && paused && (
+              <div>
+                <div>Game paused</div>
+                <div onClick={() => setPaused(false)}>Click here to resume</div>
+              </div>
+            )
+          }
+        </div>
       </div>
     </div>
   );
