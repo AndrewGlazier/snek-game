@@ -74,7 +74,7 @@ const App = () => {
       const newSnake = [...snake, newHead];
       setSnake(newSnake);
       setFood(randomFood(newSnake));
-      window.speechSynthesis.speak(new SpeechSynthesisUtterance('chomp'));
+      window.speechSynthesis.speak(new SpeechSynthesisUtterance('om nom nom'));
     } else {
       setSnake([...body, newHead]);
     }
