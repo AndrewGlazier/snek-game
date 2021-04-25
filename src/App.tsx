@@ -60,7 +60,7 @@ const App = () => {
   const speed = 100 - (score < 90 ? snake.length : 90);
 
   useEffect(() => {
-    if (paused) {
+    if (paused || gameOver) {
       return;
     }
     const [tail, ...body] = snake;
