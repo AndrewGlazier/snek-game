@@ -66,7 +66,7 @@ const App = () => {
     const [tail, ...body] = snake;
     const head = snake[snake.length - 1];
     const newHead = moveHead(head, direction);
-    if (snake.includes(newHead)) {
+    if ((newHead === food ? snake : body).includes(newHead)) {
       setGameOver(true);
       return;
     }
@@ -74,6 +74,7 @@ const App = () => {
       const newSnake = [...snake, newHead];
       setSnake(newSnake);
       setFood(randomFood(newSnake));
+      window.speechSynthesis.speak(new SpeechSynthesisUtterance('chomp'));
     } else {
       setSnake([...body, newHead]);
     }
