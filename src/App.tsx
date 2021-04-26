@@ -208,7 +208,7 @@ const App = () => {
         </div>
         <div id="overlay">
           {
-            gameOver && !paused && (
+            gameOver && (
               <div>
                 <div>Game over</div>
                 <div onClick={restartGame}>Click here to restart</div>
